@@ -1,0 +1,30 @@
+# See https://pre-commit.com/ for usage and config
+repos:
+- repo: https://github.com/commitizen-tools/commitizen
+  rev: v2.17.8
+  hooks:
+  - id: commitizen
+    stages: [commit-msg]
+
+- repo: local
+  hooks:
+  - id: isort
+    name: isort
+    stages: [commit]
+    language: system
+    entry: poetry run isort
+    types: [python]
+
+  - id: black
+    name: black
+    stages: [commit]
+    language: system
+    entry: poetry run black
+    types: [python]
+
+  - id: flake8
+    name: flake8
+    stages: [commit]
+    language: system
+    entry: poetry run flake8 --ignore W503
+    types: [python]

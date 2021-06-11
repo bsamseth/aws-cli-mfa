@@ -1,0 +1,40 @@
+[tool.poetry]
+name = "aws-cli-mfa"
+version = "0.0.0"
+description = "Automate credentials for using AWS CLI with MFA"
+authors = ["Bendik Samseth <b.samseth@gmail.com>"]
+license = "MIT"
+
+[tool.poetry.scripts]
+aws-cli-mfa = "aws_cli_mfa.main:app"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+boto3 = "^1.17.91"
+typer = "^0.3.2"
+
+[tool.poetry.dev-dependencies]
+isort = "^5.8.0"
+flake8 = "^3.9.2"
+commitizen = "^2.17.8"
+black = "^21.5b2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.isort]
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+line_length = 88
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+version = "0.0.0"
+tag_format = "$version"
+version_files = [
+    "pyproject.toml:version",
+    "aws_cli_mfa/__init__.py"
+]
