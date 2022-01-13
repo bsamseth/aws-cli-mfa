@@ -1,4 +1,5 @@
 import configparser
+import json
 import subprocess
 from pathlib import Path
 
@@ -25,9 +26,7 @@ def _askpass(prompt=""):
 
 def _1password_signin(master_password):
     try:
-        return capture_output(
-            ["op", "signin", "my", "--raw"], input=master_password.encode()
-        )
+        return capture_output(["op", "signin", "--raw"], input=master_password.encode())
     except subprocess.CalledProcessError:
         typer.secho(
             "Failed to login to 1Password (incorrect password?)", fg=typer.colors.RED
@@ -39,16 +38,22 @@ def _1password_signin(master_password):
 
 
 def _1password_otp(item_or_uuid):
-    return capture_output(
-        [
-            "op",
-            "get",
-            "totp",
-            item_or_uuid,
-            "--session",
-            _1password_signin(_askpass()),
-        ]
-    )
+    return json.loads(
+        capture_output(
+            [
+                "op",
+                "item",
+                "get",
+                item_or_uuid,
+                "--field",
+                "type=otp",
+                "--format",
+                "json",
+                "--session",
+                _1password_signin(_askpass()),
+            ]
+        )
+    )["totp"]
 
 
 def main(
