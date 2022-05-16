@@ -11,7 +11,7 @@ Automate credentials for using AWS CLI with MFA.
 
 ## Who wants this
 
-This is a command-line program that allows you to automate setting up credentials for AWS CLI. The program is aimed at the following use-case:
+This is a command-line program that allows you to automate setting up credentials for AWS CLI. The program is aimed at the following use case:
 
 - You have a `~/.aws/credentials` file with credentials for one or more users. For instance:
 
@@ -68,7 +68,7 @@ Arguments:
 
 Options:
   --aws-credentials-file PATH  The AWS CLI credentials file to update.
-                               [default: /home/bendik/.aws/credentials]
+                               [default: ~/.aws/credentials]
 
   -d, --duration FLOAT RANGE   The number of hours the MFA session should be
                                valid for.  [default: 12]
@@ -78,6 +78,14 @@ Options:
 
   -p, --otp TEXT               A one-time-password from your MFA device.
   --help                       Show this message and exit.
+```
+
+
+## Installation
+
+This should be easliy installable with pip. It's recommended to use [pipx](https://pypa.github.io/pipx):
+```bash
+pipx install git+https://github.com/bsamseth/aws-cli-mfa.git
 ```
 
 ## 1Password integration
@@ -96,12 +104,3 @@ This will prompt you for your master password and fetch the MFA code through the
 **Note**: The program assumes you sign in with the command `op signin my` (i.e. you are on a personal plan). Other subdomains are currently not supported (PR welcome).
 
 **Note**: This required `ssh-askpass` to be installed, as this is used to prompt for your master password.
-
-## Installation
-
-This should be easliy installable through pip (or even better, with [pipx](https://pypa.github.io/pipx):
-```bash
-pip install git+https://github.com/bsamseth/aws-cli-mfa.git
-# or 
-pip install git+ssh://git@github.com/bsamseth/aws-cli-mfa.git
-```
