@@ -5,8 +5,8 @@ Automate credentials for using AWS CLI with MFA.
 * [Who wants this](#who-wants-this)
 * [Basic usage](#basic-usage)
   + [Full usage help](#full-usage-help)
-* [1Password integration](#1password-integration)
 * [Installation](#installation)
+* [1Password integration](#1password-integration)
 
 
 ## Who wants this
