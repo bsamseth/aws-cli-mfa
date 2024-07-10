@@ -84,6 +84,10 @@ def main(
     one_time_password: str = typer.Option(
         None, "-p", "--otp", help="A one-time-password from your MFA device."
     ),
+    mfa_device_to_use: str = typer.Option(
+        None, 
+        "-m", "--mfa-device", help="The name of the mfa device to use"
+    )
 ):
     if not (one_time_password or op_item_or_uuid):
         typer.secho(
@@ -95,10 +99,34 @@ def main(
     otp = one_time_password or _1password_otp(op_item_or_uuid)
     typer.secho("Acquired OTP", fg=typer.colors.GREEN)
 
-    sts = boto3.session.Session(profile_name=base_profile).client("sts")
+    boto_session = boto3.session.Session(profile_name=base_profile)
+    sts = boto_session.client("sts")
+    iam = boto_session.client("iam")
+
+    mfa_devices = iam.list_mfa_devices()
+    if not mfa_devices['MFADevices']:
+        typer.secho(
+            "No MFA devices configured for this account found",
+            fg=typer.colors.RED,
+        )
+        raise typer.Exit(1)
+    if mfa_device_to_use:
+        mfa_devices_dict = {d['SerialNumber'].split('/')[-1]: d for d in mfa_devices['MFADevices']}
+        if mfa_device_to_use not in mfa_devices_dict.keys():
+            typer.secho(
+                f"No MFA device named '{mfa_device_to_use}' found. List of mfa devices configured: {', '.join(mfa_devices_dict.keys())}",
+                fg=typer.colors.RED,
+            )
+            raise typer.Exit(1)
+        mfa_device = mfa_devices_dict[mfa_device_to_use]
+    else:
+        mfa_device = mfa_devices['MFADevices'][0]
+    typer.secho(f"Using MFA Device: {mfa_device['SerialNumber']}", fg=typer.colors.GREEN)
+
+
     session_token = sts.get_session_token(
         DurationSeconds=int(session_duration * 60 * 60),
-        SerialNumber=sts.get_caller_identity()["Arn"].replace(":user/", ":mfa/"),
+        SerialNumber=mfa_device['SerialNumber'],
         TokenCode=otp,
     )
     typer.secho("Acquired MFA session from AWS STS", fg=typer.colors.GREEN)
