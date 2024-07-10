@@ -86,7 +86,7 @@ def main(
     ),
     mfa_device_to_use: str = typer.Option(
         None, 
-        "-m", "--mfa-device", help="The name of the mfa device to use"
+        "-m", "--mfa-device", help="The name of the mfa device to use. By default, the latest configured MFA device is used"
     )
 ):
     if not (one_time_password or op_item_or_uuid):
